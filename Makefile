@@ -38,7 +38,7 @@ release:
 	@echo "🌐 Pushing to gh-pages branch..."
 	git subtree push --prefix dist origin gh-pages
 	@echo "✅ Successfully deployed to GitHub Pages!"
-	@echo "🔗 Your site will be available at: https://tomoki.github.io/topkapu/"
+	@echo "🔗 Your site will be available at: https://tontiruu.github.io/topkapu/"
 
 # Clean up
 clean:
