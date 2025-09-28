@@ -1,0 +1,37 @@
+/* Global reset and base styles */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: 'Georgia', 'Times New Roman', serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #faf9f7;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Improve readability */
+p, li {
+  max-width: none;
+}
+
+/* Smooth transitions for all interactive elements */
+a, button, .tip-card, .harem-card {
+  transition: all 0.3s ease;
+}
+
+/* Selection styles */
+::selection {
+  background-color: #d4a574;
+  color: white;
+}
+
+::-moz-selection {
+  background-color: #d4a574;
+  color: white;
+}
