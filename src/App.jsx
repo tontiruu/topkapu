@@ -1,5 +1,38 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import './App.css'
+
+function LoadingScreen() {
+  return (
+    <div className="loading-screen">
+      <div className="loading-background">
+        <div className="floating-ornament ornament-1"></div>
+        <div className="floating-ornament ornament-2"></div>
+        <div className="floating-ornament ornament-3"></div>
+        <div className="floating-ornament ornament-4"></div>
+      </div>
+      
+      <div className="loading-content">
+        <h2 className="loading-title">
+          <span className="title-line">Entering</span>
+          <span className="title-main">Topkapi Palace</span>
+        </h2>
+        
+        <div className="loading-progress">
+          <div className="progress-bar">
+            <div className="progress-fill"></div>
+          </div>
+          <div className="progress-ornament-left"></div>
+          <div className="progress-ornament-right"></div>
+        </div>
+        
+        <p className="loading-text">
+          <span className="text-line">Preparing your journey through</span>
+          <span className="text-emphasis">Ottoman Empire's Glory</span>
+        </p>
+      </div>
+    </div>
+  )
+}
 
 function PalaceTrivia() {
   const [openTrivia, setOpenTrivia] = useState(null)
@@ -123,12 +156,62 @@ function PalaceTrivia() {
 }
 
 function App() {
+  const [isLoading, setIsLoading] = useState(true)
+  const [imagesLoaded, setImagesLoaded] = useState(0)
+  const [loadedImageUrls, setLoadedImageUrls] = useState(new Set())
+  
+  // 重要な画像のみをカウント（initial viewportで表示される画像）
+  const criticalImages = [
+    'IMG_0623.jpg', // Hero image
+    'IMG_0586.jpg', // Second Court
+  ]
+  const totalImages = criticalImages.length
+
+  useEffect(() => {
+    // 重要な画像が読み込まれたら遷移 + 最小1秒待機
+    if (imagesLoaded >= totalImages) {
+      const minDelay = setTimeout(() => {
+        setIsLoading(false)
+      }, 1000) // 最小1秒は表示
+      return () => clearTimeout(minDelay)
+    }
+  }, [imagesLoaded, totalImages])
+
+  useEffect(() => {
+    // フェイルセーフ：最大8秒で強制遷移
+    const maxLoadingTime = setTimeout(() => {
+      console.log('フェイルセーフ: 強制遷移')
+      setIsLoading(false)
+    }, 8000)
+
+    return () => clearTimeout(maxLoadingTime)
+  }, [])
+
+  const handleImageLoad = (imageUrl) => {
+    const filename = imageUrl.split('/').pop()
+    if (criticalImages.includes(filename)) {
+      setLoadedImageUrls(prev => {
+        const newSet = new Set(prev)
+        if (!newSet.has(filename)) {
+          newSet.add(filename)
+          setImagesLoaded(newSet.size)
+          console.log(`重要画像読み込み: ${filename} (${newSet.size}/${totalImages})`)
+        }
+        return newSet
+      })
+    }
+  }
+
+  if (isLoading) {
+    return <LoadingScreen />
+  }
+
   return (
     <div className="app">
       {/* Hero Section */}
       <section className="hero">
         <div className="hero-image-container">
-          <img src={`${import.meta.env.BASE_URL}images/IMG_0623.jpg`} alt="Topkapi Palace exterior view" className="hero-image" />
+          <img src={`${import.meta.env.BASE_URL}images/IMG_0623.jpg`} alt="Topkapi Palace exterior view" className="hero-image" onLoad={(e) => handleImageLoad(e.target.src)} loading="eager" />
           <div className="hero-image-overlay">
             <h1 className="hero-title">Topkapi Palace</h1>
             <p className="hero-subtitle">Where Ottoman Sultans Ruled the World for 400 Years - The Ultimate Stage of Power</p>
@@ -209,7 +292,7 @@ function App() {
             <h3>Second Court: The Power Center Where Empires Were Born</h3>
             <p className="entrance-fee-note">※ Entrance fee required from this point</p>
             <div className="court-content">
-              <img src={`${import.meta.env.BASE_URL}images/IMG_0586.jpg`} alt="Gate of Salutation (Bab-üs Selâm) entrance to Second Court" className="court-image" />
+              <img src={`${import.meta.env.BASE_URL}images/IMG_0586.jpg`} alt="Gate of Salutation (Bab-üs Selâm) entrance to Second Court" className="court-image" onLoad={(e) => handleImageLoad(e.target.src)} loading="eager" />
               <div className="court-text">
                 <p>
                   The magnificent "Gate of Salutation" (Bab-üs Selâm) welcomes you - the symbolic entrance to absolute power. In the past, only the Sultan and his mother (Valide Sultan) were permitted to pass through this gate on horseback. Even the Grand Vizier, the empire's most powerful minister, had to dismount here and walk. This simple rule perfectly illustrates the strict hierarchy that governed every aspect of palace life!
@@ -244,7 +327,7 @@ function App() {
             <div className="subsection">
               <h4>Treasury: Where Imperial Wealth Becomes Legend</h4>
               <div className="subsection-content">
-                <img src={`${import.meta.env.BASE_URL}images/IMG_8041.JPG`} alt="Topkapi Palace Treasury with incredible imperial treasures and jewels" className="subsection-image" />
+                <img src={`${import.meta.env.BASE_URL}images/IMG_8041.JPG`} alt="Topkapi Palace Treasury with incredible imperial treasures and jewels" className="subsection-image" onLoad={(e) => handleImageLoad(e.target.src)} loading="lazy" />
                 <p>
                   After years of renovation, the treasury has finally reopened and is absolutely essential to visit. Prepare to witness wealth beyond your wildest imagination - this is where fairy tales become reality!
                 </p>
@@ -254,7 +337,7 @@ function App() {
             <div className="subsection">
               <h4>The Spoonmaker's Diamond</h4>
               <div className="subsection-content">
-                <img src={`${import.meta.env.BASE_URL}images/IMG_8043.jpg`} alt="The famous 86-carat Spoonmaker's Diamond" className="subsection-image" />
+                <img src={`${import.meta.env.BASE_URL}images/IMG_8043.jpg`} alt="The famous 86-carat Spoonmaker's Diamond" className="subsection-image" onLoad={(e) => handleImageLoad(e.target.src)} loading="lazy" />
                 <p>
                   An enormous 86-carat diamond with a heartbreaking backstory. A fisherman discovered this sparkling stone on the beach, but when he showed it to a jeweler, he was deceived. The jeweler told him it was "just worthless glass" but offered to trade it for three spoons out of "pity." Only later was it revealed to be one of the world's most valuable diamonds - a cruel tale of how the poor are often exploited by those who know better.
                 </p>
@@ -273,7 +356,7 @@ function App() {
           <div className="court-section">
             <h3>Fourth Court: Gardens of Breathtaking Beauty and Elegant Kiosks</h3>
             <div className="court-content">
-              <img src={`${import.meta.env.BASE_URL}images/IMG 0608 from Google Account.jpg`} alt="Fourth Court gardens with elegant kiosks and peaceful pavilions" className="court-image" />
+              <img src={`${import.meta.env.BASE_URL}images/IMG 0608 from Google Account.jpg`} alt="Fourth Court gardens with elegant kiosks and peaceful pavilions" className="court-image" onLoad={(e) => handleImageLoad(e.target.src)} loading="lazy" />
               <div className="court-text">
                 <p>
                   The palace's innermost garden, dotted with beautiful pavilions (kiosks). This tranquil area provided the Sultan with a peaceful retreat from the affairs of state.
@@ -284,7 +367,7 @@ function App() {
             <div className="subsection">
               <h4>Baghdad Kiosk</h4>
               <div className="subsection-content">
-                <img src={`${import.meta.env.BASE_URL}images/IMG_8076.jpg`} alt="Baghdad Kiosk with spectacular Golden Horn view" className="subsection-image" />
+                <img src={`${import.meta.env.BASE_URL}images/IMG_8076.jpg`} alt="Baghdad Kiosk with spectacular Golden Horn view" className="subsection-image" onLoad={(e) => handleImageLoad(e.target.src)} loading="lazy" />
                 <p>
                   Built in 1639 by Sultan Murad IV to commemorate his victory in the Baghdad campaign, this is a masterpiece of Ottoman classical architecture. The interior tiles and mother-of-pearl inlay work are stunning, but the view of the Golden Horn and the New City from here is absolutely spectacular - a vista that will steal your breath and capture your soul forever!
                 </p>
@@ -294,7 +377,7 @@ function App() {
             <div className="subsection">
               <h4>Breathtaking Bosphorus Views from the Palace Gardens</h4>
               <div className="subsection-content">
-                <img src={`${import.meta.env.BASE_URL}images/IMG_0603.jpg`} alt="Spectacular Bosphorus Strait view from Topkapi Palace gardens" className="subsection-image" />
+                <img src={`${import.meta.env.BASE_URL}images/IMG_0603.jpg`} alt="Spectacular Bosphorus Strait view from Topkapi Palace gardens" className="subsection-image" onLoad={(e) => handleImageLoad(e.target.src)} loading="lazy" />
                 <p>
                   From the Fourth Court's elevated gardens, you'll witness one of the world's most spectacular panoramic views. The shimmering Bosphorus Strait stretches before you like a liquid highway between Europe and Asia, dotted with ships carrying dreams and destinies across continents. This is the same breathtaking vista that inspired sultans for centuries, where they would contemplate the vastness of their empire while watching the sun paint the waters in gold and crimson. Stand here, and you're not just seeing a view - you're experiencing the very perspective that shaped an empire's vision of the world.
                 </p>
@@ -314,7 +397,7 @@ function App() {
 
           <div className="harem-grid">
             <div className="harem-card">
-              <img src={`${import.meta.env.BASE_URL}images/4858E3B8-A95B-46BA-98AD-329040D56AF7.jpg`} alt="Concubines' living quarters in the Harem" className="harem-image" />
+              <img src={`${import.meta.env.BASE_URL}images/4858E3B8-A95B-46BA-98AD-329040D56AF7.jpg`} alt="Concubines' living quarters in the Harem" className="harem-image" onLoad={(e) => handleImageLoad(e.target.src)} loading="lazy" />
               <h3>Life of the Concubines</h3>
               <p>
                 Young girls brought to the Harem were trained in Turkish language, Islam, culture, and all the refinements needed to captivate the Sultan - makeup, music, and dance. They lived in an intense meritocracy, advancing their status by catching the Sultan's eye and earning his favor. It was the ultimate high-stakes competition where beauty, wit, and charm determined everything!
@@ -322,7 +405,7 @@ function App() {
             </div>
 
             <div className="harem-card">
-              <img src={`${import.meta.env.BASE_URL}images/IMG_8070.jpg`} alt="Beautiful Iznik tiles with tulip and carnation patterns" className="harem-image" />
+              <img src={`${import.meta.env.BASE_URL}images/IMG_8070.jpg`} alt="Beautiful Iznik tiles with tulip and carnation patterns" className="harem-image" onLoad={(e) => handleImageLoad(e.target.src)} loading="lazy" />
               <h3>Magnificent Tile Decorations</h3>
               <p>
                 Iznik tiles that can only be viewed from afar in the Blue Mosque are here close enough to touch. The breathtaking beauty of tiles depicting tulips, carnations, and Quranic verses will leave you absolutely mesmerized and questioning everything you thought you knew about artistic perfection!
@@ -330,7 +413,7 @@ function App() {
             </div>
 
             <div className="harem-card">
-              <img src={`${import.meta.env.BASE_URL}images/IMG_0623.jpg`} alt="Imperial Hall where the Sultan held banquets" className="harem-image" />
+              <img src={`${import.meta.env.BASE_URL}images/IMG_0623.jpg`} alt="Imperial Hall where the Sultan held banquets" className="harem-image" onLoad={(e) => handleImageLoad(e.target.src)} loading="lazy" />
               <h3>Imperial Hall</h3>
               <p>
                 The grand hall where the Sultan enjoyed meals and banquets. However, the Sultan's mother and her attendants were always present, making the banquets closer to formal ceremonies.
@@ -356,7 +439,7 @@ function App() {
               Now, won't you embark on this life-changing journey to discover the traces of the Sultans' dreams? An adventure that will transform your very soul awaits!
             </p>
           </div>
-          <img src={`${import.meta.env.BASE_URL}images/Istanbul Bosphorus.jpg`} alt="Stunning view of Istanbul and the Bosphorus from Topkapi Palace" className="conclusion-image" />
+          <img src={`${import.meta.env.BASE_URL}images/Istanbul Bosphorus.jpg`} alt="Stunning view of Istanbul and the Bosphorus from Topkapi Palace" className="conclusion-image" onLoad={(e) => handleImageLoad(e.target.src)} loading="lazy" />
         </div>
       </section>
     </div>
