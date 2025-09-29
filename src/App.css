@@ -21,6 +21,7 @@
   --font-display: 'Playfair Display', serif;
   --font-body: 'Inter', sans-serif;
   --font-accent: 'Crimson Text', serif;
+  --font-handwritten: 'Caveat', cursive;
   
   /* Shadows & Effects */
   --shadow-soft: 0 4px 20px rgba(0, 105, 86, 0.08);
@@ -204,6 +205,20 @@ body {
   color: var(--text-dark);
   font-weight: 400;
   letter-spacing: 0.3px;
+}
+
+/* 手描き風スタイル */
+.handwritten {
+  font-family: var(--font-handwritten) !important;
+  font-size: 1.6rem !important;
+  font-weight: 500;
+  line-height: 1.9 !important;
+  letter-spacing: 0.5px !important;
+  color: var(--main-teal) !important;
+  text-shadow: 0 2px 4px rgba(0, 105, 86, 0.1);
+  transform: rotate(-0.5deg);
+  max-width: 900px !important;
+  margin: 0 auto !important;
 }
 
 /* Pre-visit Tips Section */
@@ -1144,6 +1159,20 @@ body {
   border-radius: 50%;
   opacity: 0.6;
   box-shadow: 0 0 8px rgba(201, 169, 110, 0.3);
+}
+
+/* 手描き風スタイルのレスポンシブ対応 */
+@media (max-width: 768px) {
+  .handwritten {
+    font-size: 1.3rem !important;
+    transform: rotate(-0.3deg) !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .handwritten {
+    font-size: 1.1rem !important;
+  }
 }
 
 /* Responsive Design for Trivia */

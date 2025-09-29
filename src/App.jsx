@@ -143,8 +143,8 @@ function App() {
       <section className="introduction">
         <div className="container">
           <h2>Unlock the Secrets Behind Every Wall</h2>
-          <p className="intro-text">
-            Every single wall in this palace holds captivating stories waiting to be discovered. Prepare to embark on an extraordinary journey where you'll decode the tales carved into each corner, making your visit 100 times more enriching with secrets and fascinating historical insights that will absolutely blow your mind!
+          <p className="intro-text handwritten">
+            Step into a living chronicle where whispers of sultans still echo through marble halls. Here, every shadow conceals ancient secrets, every tile tells forbidden tales, and every golden detail holds the power to transport you across centuries. This isn't just a visit—it's your personal invitation to unlock the soul of an empire that once ruled three continents.
           </p>
         </div>
       </section>
@@ -212,7 +212,7 @@ function App() {
               <img src={`${import.meta.env.BASE_URL}images/IMG_0586.jpg`} alt="Gate of Salutation (Bab-üs Selâm) entrance to Second Court" className="court-image" />
               <div className="court-text">
                 <p>
-                  The magnificent "Gate of Salutation" (Bab-üs Selâm) welcomes you - the symbolic entrance to absolute power. In the past, only the Sultan and his mother (Valide Sultan) were permitted to pass through this gate on horseback. Even the Grand Vizier had to dismount here. Talk about a dramatic display of hierarchy that would make Game of Thrones jealous!
+                  The magnificent "Gate of Salutation" (Bab-üs Selâm) welcomes you - the symbolic entrance to absolute power. In the past, only the Sultan and his mother (Valide Sultan) were permitted to pass through this gate on horseback. Even the Grand Vizier, the empire's most powerful minister, had to dismount here and walk. This simple rule perfectly illustrates the strict hierarchy that governed every aspect of palace life!
                 </p>
               </div>
             </div>
